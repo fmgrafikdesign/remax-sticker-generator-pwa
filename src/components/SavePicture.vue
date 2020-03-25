@@ -1,5 +1,5 @@
 <template>
-  <span class="save-picture" @click="savePicture()">SPEICHERN</span>
+  <span class="save-picture placeholder-css" @click="savePicture()">SPEICHERN</span>
 </template>
 
 <script>
@@ -36,5 +36,9 @@ export default {
     background-color: forestgreen;
     padding: 1rem;
     display: inline-block;
+  }
+
+  .placeholder-css {
+    margin-left: auto
   }
 </style>
