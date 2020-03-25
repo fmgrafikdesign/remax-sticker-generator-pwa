@@ -1,14 +1,12 @@
 <template>
-    <span class="delete-sticker" @click="deleteSticker()">DELETE</span>
+    <span class="delete-sticker" v-bind:class="{active: active}" @click="$emit('deleteSticker')">DELETE</span>
 </template>
 
 <script>
 export default {
   name: 'DeleteSticker',
-  methods: {
-    deleteSticker: () => {
-      console.log('haha sticker goes poof')
-    }
+  props: {
+    active: false
   }
 }
 </script>
@@ -17,8 +15,12 @@ export default {
   .delete-sticker {
     color: #fff;
     font-weight: bold;
-    background-color: #ff0000;
+    background-color: #888;
     padding: 1rem;
     display: inline-block;
+  }
+
+  .active {
+    background-color: #ff0000;
   }
 </style>

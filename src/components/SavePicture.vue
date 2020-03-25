@@ -3,11 +3,27 @@
 </template>
 
 <script>
+import html2canvas from 'html2canvas'
+import { saveAs } from 'file-saver'
+
 export default {
   name: 'SavePicture',
   methods: {
     savePicture: () => {
-      console.log('haha picture goes save')
+      if (!document.querySelector('#composition')) {
+        return
+      }
+
+      // Render html-composition to a canvas and save the canvas
+      html2canvas(document.querySelector('#composition'), {
+        scrollX: 0,
+        scrollY: -window.scrollY
+      }).then(canvas => {
+        // document.body.appendChild(canvas)
+        canvas.toBlob(blob => {
+          saveAs(blob, 'nicejpg.jpg')
+        }, 'image/jpeg')
+      })
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="sticker-list-wrapper">
     <h4>Berühren zum Hinzufügen</h4>
-  <div id="sticker-list">
+  <div id="sticker-list" v-bind:class="{disabled: !imageAvailable}">
     <div v-for="image in images" :key="image" class="image-wrapper">
       <img :src="image" @click="addSticker(image)">
     </div>
@@ -12,6 +12,9 @@
 <script>
 
 // TODO: Refactor into adapter for different methods of retrieving sticker URLs
+import ImageCanvas from '@/components/ImageCanvas'
+import { EventBus } from '@/event-bus'
+
 function importAllStickers (stickers) {
   return stickers.keys().map(stickers)
 }
@@ -23,12 +26,19 @@ export default {
   data: function () {
     return {
       images: images,
-      somelist: [1, 2, 3, 4]
+      somelist: [1, 2, 3, 4],
+      imageAvailable: false
     }
+  },
+  created () {
+    EventBus.$on('image-available', () => {
+      console.log('image available now')
+      this.imageAvailable = true
+    })
   },
   methods: {
     addSticker: (sticker) => {
-      console.log('clicked on sticker: ', sticker)
+      EventBus.$emit('sticker-added', sticker)
     }
   }
 }

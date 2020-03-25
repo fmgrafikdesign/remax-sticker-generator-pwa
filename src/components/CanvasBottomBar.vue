@@ -1,7 +1,7 @@
 <template>
   <div class="canvas-bottom-bar d-flex align-contents-center">
     <!-- Delete -->
-  <DeleteSticker />
+  <DeleteSticker v-on:deleteSticker="$emit('deleteSticker')" v-bind:active="selectedSticker !== -1" />
   <!-- Chose another image -->
     <ChoseAnotherPicture v-on:changePreview="emitToParent" v-if="imageData.length > 0" />
   <!-- save composition -->
@@ -18,7 +18,7 @@ export default {
   components: { SavePicture, ChoseAnotherPicture, DeleteSticker },
   props: {
     imageData: String,
-    selectedSticker: String
+    selectedSticker: Number
   },
   methods: {
     emitToParent: function (event) {

@@ -3,7 +3,7 @@
     <div class="image-preview-wrapper" v-bind:class="{h50: imageData.length === 0, w100: imageData.length === 0}" >
 
       <div ref="composition" id="composition" class="composition h100" v-if="imageData.length > 0">
-        <div ref="stickers" class="sticker w100 h100 position-absolute top0 left0">
+        <div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0">
           <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :image-data="sticker.url" v-bind:key="sticker.id" />
         </div>
         <img class="preview-image img-fluid drop-shadow mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
@@ -44,13 +44,17 @@ export default {
   },
   methods: {
     disableAllOtherMoveables (event) {
-      console.log('disabling all other moveables... ', event)
-      // console.log(this.$refs.testref)
+      // console.log('disabling all other moveables... ', event)
+
+      if (!this.$refs.stickers || this.$refs.stickers.length <= 0) return
+
+      // console.log(this.$refs.stickers)
+
       this.selectedSticker = event
       this.$refs.stickers.forEach(sticker => {
-        console.log('comparing', sticker.id, event)
+        // console.log('comparing', sticker.id, event)
         if (sticker.id !== event) {
-          console.log('disabling moveable for sticker #', sticker.id)
+          // console.log('disabling moveable for sticker #', sticker.id)
           sticker.disableMoveable()
         }
       })
@@ -68,20 +72,17 @@ export default {
           EventBus.$emit('image-available')
           // Delete stickers on new image
           this.stickers = []
+          // This is less user-friendly than I hoped
+          /*
+          Vue.nextTick().then(() => {
+            this.updateMoveableBoundingBoxes()
+          })
+          */
         }
         reader.readAsDataURL(input.files[0])
       }
     },
-    updateMoveableBoundingBoxes () {
-      if (!this.$refs.stickers || this.$refs.stickers.length <= 0) return
-
-      console.log('updating all bounding rects...')
-      this.$refs.stickers.forEach(sticker => {
-        sticker.updateRect()
-      })
-    },
     deleteSticker () {
-      console.log('haha sticker goes poof')
       this.stickers = this.stickers.filter(sticker => sticker.id !== this.selectedSticker)
       this.selectedSticker = -1
     },
@@ -92,15 +93,16 @@ export default {
         alert('Wähle zuerst ein Bild aus, bevor du Sticker hinzufügst')
         return
       }
-
+      this.selectedSticker = this.nextStickerId
+      this.disableAllOtherMoveables(this.selectedSticker)
       this.stickers.push({
-        id: this.nextStickerId,
+        id: this.nextStickerId++,
         url: sticker
       })
 
-      this.selectedSticker = this.nextStickerId
-      this.disableAllOtherMoveables(this.selectedSticker)
-      this.nextStickerId++
+      // this.selectedSticker = this.nextStickerId
+      // this.disableAllOtherMoveables(this.selectedSticker)
+      // this.nextStickerId++
     }
   }
 }
