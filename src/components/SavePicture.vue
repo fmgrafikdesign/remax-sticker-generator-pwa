@@ -17,6 +17,8 @@ export default {
         return
       }
 
+      // TODO: [BUG] On mobile there is a small white border at the bottom of the saved picture
+
       // Render html-composition to a canvas and save the canvas
       html2canvas(document.querySelector('#composition'), {
         scrollX: 0,

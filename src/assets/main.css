@@ -58,6 +58,11 @@ html, body {
     margin: 0;
 }
 
+html, body, #app {
+    height: 100%;
+    position: relative;
+}
+
 .w100 {
     width: 100%;
 }
