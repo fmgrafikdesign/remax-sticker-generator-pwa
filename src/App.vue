@@ -3,14 +3,15 @@
     <image-wrapper/>
     <hr>
     <StickerList />
+    <!--
     <hr>
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    -->
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
 import StickerList from '@/components/StickerList.vue'
 import ImageWrapper from '@/components/ImageWrapper.vue'
 
@@ -18,8 +19,7 @@ export default Vue.extend({
   name: 'App',
   components: {
     ImageWrapper,
-    StickerList,
-    HelloWorld
+    StickerList
   }
 })
 </script>
