@@ -1,5 +1,5 @@
 <template>
-    <span class="delete-sticker" v-bind:class="{active: active}" @click="$emit('deleteSticker')">DELETE</span>
+    <span class="delete-sticker" v-bind:class="{active: active}" @click="$emit('deleteSticker')">LÖSCHEN</span>
 </template>
 
 <script>

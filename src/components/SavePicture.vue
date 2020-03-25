@@ -8,8 +8,11 @@ import { saveAs } from 'file-saver'
 
 export default {
   name: 'SavePicture',
+  props: {
+    filename: String
+  },
   methods: {
-    savePicture: () => {
+    savePicture () {
       if (!document.querySelector('#composition')) {
         return
       }
@@ -21,7 +24,8 @@ export default {
       }).then(canvas => {
         // document.body.appendChild(canvas)
         canvas.toBlob(blob => {
-          saveAs(blob, 'nicejpg.jpg')
+          // Remove file extension from name
+          saveAs(blob, this.filename.replace(/\.[^/.]+$/, '') + '-stickers.jpg')
         }, 'image/jpeg')
       })
     }

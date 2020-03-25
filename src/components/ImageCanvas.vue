@@ -3,9 +3,9 @@
     <div class="image-preview-wrapper" v-bind:class="{h50: imageData.length === 0, w100: imageData.length === 0}" >
 
       <div ref="composition" id="composition" class="composition h100" v-if="imageData.length > 0">
-        <div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0">
+        <!--<div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0"> -->
           <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :image-data="sticker.url" v-bind:key="sticker.id" />
-        </div>
+        <!--</div>-->
         <img class="preview-image img-fluid drop-shadow mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
       </div>
 
@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <CanvasBottomBar :selected-sticker="selectedSticker" :imageData="imageData" v-on:deleteSticker="deleteSticker" v-on:changePreview="onChildClick" />
+    <CanvasBottomBar :filename="filename" :selected-sticker="selectedSticker" :imageData="imageData" v-on:deleteSticker="deleteSticker" v-on:changePreview="onChildClick" />
 
   </div>
 </template>
@@ -34,6 +34,7 @@ export default {
       nextStickerId: 0,
       imageData: '',
       selectedSticker: -1,
+      filename: '',
       stickers: []
     }
   },
@@ -63,15 +64,17 @@ export default {
       this.previewImage(event)
     },
     previewImage: function (event) {
-      console.log(this.stickers)
       const input = event.target
       if (input.files && input.files[0]) {
+        console.log(input.files[0])
+        this.filename = input.files[0].name
         const reader = new FileReader()
         reader.onload = (e) => {
           this.imageData = e.target.result
           EventBus.$emit('image-available')
           // Delete stickers on new image
           this.stickers = []
+          // Save filename for saving later
           // This is less user-friendly than I hoped
           /*
           Vue.nextTick().then(() => {
