@@ -1,5 +1,5 @@
 <template>
-  <div class="image-wrapper">
+  <div class="image-wrapper h100">
     <ImageCanvas />
   </div>
 </template>
@@ -15,7 +15,6 @@ export default {
 <style scoped>
   .image-wrapper {
     position: relative;
-    height: 100vh;
     background-color: #fbfcff;
   }
 </style>

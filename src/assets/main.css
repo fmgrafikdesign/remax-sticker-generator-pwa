@@ -61,6 +61,7 @@ html, body {
 html, body, #app {
     height: 100%;
     position: relative;
+    width: 100%;
 }
 
 .w100 {
