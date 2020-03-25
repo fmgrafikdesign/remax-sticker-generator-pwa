@@ -1,5 +1,9 @@
 <template>
-    <span class="delete-sticker" v-bind:class="{active: active}" @click="$emit('deleteSticker')">LÖSCHEN</span>
+  <div class="delete-sticker-wrapper button-wrapper" @click="$emit('deleteSticker')">
+    <div class="delete-button button" v-bind:class="{active: active}">
+      <svg class="icon icon-delete"><use xlink:href="#icon-delete"></use></svg>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -12,15 +16,9 @@ export default {
 </script>
 
 <style scoped>
-  .delete-sticker {
-    color: #fff;
-    font-weight: bold;
-    background-color: #888;
-    padding: 1rem;
-    display: inline-block;
+  .delete-button {
   }
-
   .active {
-    background-color: #ff0000;
+    background-color: #e11b22;
   }
 </style>

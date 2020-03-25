@@ -5,7 +5,7 @@
   <!-- Chose another image -->
     <ChoseAnotherPicture v-on:changePreview="emitToParent" v-if="imageData.length > 0" />
   <!-- save composition -->
-    <SavePicture :filename="filename" />
+    <SavePicture :filename="filename" v-bind:active="imageData.length > 0" />
   </div>
 </template>
 

@@ -1,18 +1,20 @@
 <template>
   <div class="image-canvas h100">
+    <AppTitle />
     <div class="image-preview-wrapper" v-bind:class="{h50: imageData.length === 0, w100: imageData.length === 0}" >
 
-      <div ref="composition" id="composition" class="composition h100" v-if="imageData.length > 0">
+      <div ref="composition" id="composition" class="composition h100 drop-shadow" v-if="imageData.length > 0">
         <!--<div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0"> -->
           <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :image-data="sticker.url" v-bind:key="sticker.id" />
         <!--</div>-->
-        <img class="preview-image img-fluid drop-shadow mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
+        <img ref="image" class="preview-image img-fluid mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
       </div>
 
       <div class="file-upload-form drop-shadow image-placeholder" v-if="imageData.length === 0">
         <div class="image-upload-wrapper h100 w100">
         <input class="d-none" id="image-upload" name="image" type="file" @change="previewImage" accept="image/*" value="Bild hochladen">
-        <label for="image-upload" class="upload-image-label">Bild hochladen</label>
+
+        <label for="image-upload" class="upload-image-label"><svg class="placeholder-vector"><use xlink:href="#icon-image"></use></svg> <br> Bild wählen</label>
         </div>
       </div>
     </div>
@@ -25,17 +27,20 @@
 import CanvasBottomBar from '@/components/CanvasBottomBar'
 import { EventBus } from '@/event-bus'
 import Sticker from '@/components/Sticker'
+import Vue from 'vue'
+import AppTitle from '@/components/AppTitle'
 
 export default {
   name: 'ImageCanvas',
-  components: { Sticker, CanvasBottomBar },
+  components: { AppTitle, Sticker, CanvasBottomBar },
   data: function () {
     return {
       nextStickerId: 0,
       imageData: '',
       selectedSticker: -1,
       filename: '',
-      stickers: []
+      stickers: [],
+      compositionWidth: 9999
     }
   },
   created () {
@@ -74,13 +79,15 @@ export default {
           EventBus.$emit('image-available')
           // Delete stickers on new image
           this.stickers = []
+          this.selectedSticker = -1
+
           // Save filename for saving later
           // This is less user-friendly than I hoped
-          /*
+
           Vue.nextTick().then(() => {
-            this.updateMoveableBoundingBoxes()
+            console.log('next tick: ', this.$refs.image.clientHeight)
+            this.compositionWidth = this.$refs.image.clientHeight
           })
-          */
         }
         reader.readAsDataURL(input.files[0])
       }
@@ -135,13 +142,14 @@ export default {
 .image-placeholder {
   width: 100%;
   height: 100%;
-  background-color: #a4d7f4;
-  border: 3px dashed #0054a4;
+  background-color: #6d7275;
+  border: 2px dashed #4a4a4a;
   border-radius: 4px;
 }
 
   .image-upload-wrapper {
     display: table;
+    padding-bottom: 10px
   }
 
 .upload-image-label {
@@ -152,7 +160,10 @@ export default {
   padding-bottom: 10px;
   text-align: center;
   font-weight: bold;
-  color: #0054a4;
+  /* font-size: 90%; */
+  color: #dce0ea;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .drop-shadow {
@@ -171,5 +182,13 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
+  .placeholder-vector {
+    width: 25%;
+    max-width: 80px;
+    height: 110px;
+    stroke: #b0b3bb;
+    fill: #B0B3BB;
+  }
 
 </style>

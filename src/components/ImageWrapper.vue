@@ -15,6 +15,6 @@ export default {
 <style scoped>
   .image-wrapper {
     position: relative;
-    background-color: #fbfcff;
+    background-color: #292b2f;
   }
 </style>
