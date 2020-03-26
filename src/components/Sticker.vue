@@ -14,6 +14,8 @@
 <script>
 import Moveable from 'vue-moveable'
 
+// TODO Resize event updateRect && updateTarget
+
 export default {
   name: 'Sticker',
   components: {
@@ -33,6 +35,12 @@ export default {
       throttleRotate: 0
     }
   }),
+  mounted () {
+    window.addEventListener('resize', e => {
+      this.$refs.moveable.updateRect()
+      // this.$refs.moveable.updateTarget()
+    })
+  },
   methods: {
     enableMoveable () {
       this.$emit('disable-all-other-moveables', this.id)
@@ -53,7 +61,7 @@ export default {
       // reference to the control box: this.$refs.moveable.moveable.innerMoveable.moveable.moveable.controlBox.element
       // console.log(this.$refs.moveable)
       // this.disableMoveable()
-      console.log('updated moveable ')
+      // console.log('updated moveable ')
     },
     handleDrag ({ target, left, top }) {
       // console.log('onDrag left, top', left, top)

@@ -4,6 +4,9 @@ module.exports = {
   pwa: {
     name: 'RE/MAX Kontor Sticker Generator',
     manifestPath: 'manifest.json',
+    workboxOptions: {
+      skipWaiting: true
+    },
     themeColor: '#0054a4',
     msTileColor: '#0054a4',
     iconPaths: {
