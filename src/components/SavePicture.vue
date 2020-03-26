@@ -45,7 +45,7 @@ export default {
         canvas.toBlob(blob => {
           // Remove file extension from name
           saveAs(blob, this.filename.replace(/\.[^/.]+$/, '') + '-stickers.jpg')
-          this.$noty.success('Bild erfolgreich heruntergeladen!')
+          this.$noty.success('Bild erfolgreich gespeichert! Du kannst es über die Statusleiste deines Telefons aufrufen & teilen.', { timeout: 5000 })
         }, 'image/jpeg')
       })
     }
