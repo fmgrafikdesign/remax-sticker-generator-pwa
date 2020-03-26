@@ -1,7 +1,7 @@
 <template>
     <div class="title-wrapper">
       <h1 class="app-title text-center">RE/MAX Sticker Generator</h1>
-      <div class="app-subtitle">von <a href="https://fmgrafikdesign.de">Fabian Mohr</a></div>
+      <div class="app-subtitle">von <a href="https://fmgrafikdesign.de" target="_blank">Fabian Mohr</a></div>
     </div>
 </template>
 <script>

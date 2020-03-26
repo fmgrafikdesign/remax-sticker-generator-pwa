@@ -1,7 +1,7 @@
 <template>
   <div class="sticker-list-wrapper">
     <h2 class="section-title text-center" v-if="imageAvailable">Tippen zum Hinzufügen</h2>
-    <h2 class="section-title text-center" v-else>Wähle ein Bild, um Sticker hinzufügen zu können</h2>
+    <h2 class="section-title text-center" v-else>Wähle erst ein Bild aus, um Sticker hinzufügen zu können.</h2>
     <div id="sticker-list" v-bind:class="{disabled: !imageAvailable}">
     <div v-for="image in images" :key="image" class="image-wrapper">
       <img :src="image" @click="addSticker(image)">
@@ -52,7 +52,9 @@ export default {
 
   .section-title {
     font-weight: bold;
-    margin-bottom: 1.5rem
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+    line-height: 1.5
   }
 
   .image-wrapper {

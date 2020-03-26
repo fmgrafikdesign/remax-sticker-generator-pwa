@@ -143,7 +143,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #6d7275;
-  border: 2px dashed #4d5361;
+  border: 2px dashed #999ba0;
   border-radius: 4px;
 }
 
@@ -160,7 +160,7 @@ export default {
   padding-bottom: 10px;
   text-align: center;
   font-weight: bold;
-  /* font-size: 90%; */
+  font-size: 90%;
   color: #dce0ea;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -185,8 +185,8 @@ export default {
 
   .placeholder-vector {
     width: 25%;
-    max-width: 80px;
-    height: 110px;
+    max-width: 64px;
+    height: 92px;
     stroke: #b0b3bb;
     fill: #B0B3BB;
   }

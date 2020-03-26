@@ -1,4 +1,5 @@
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin')
 
 module.exports = {
   pwa: {
@@ -11,7 +12,12 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [
-      new FaviconsWebpackPlugin()
+      new FaviconsWebpackPlugin(),
+      new GoogleFontsPlugin({
+        fonts: [
+          { family: 'Roboto', variants: ['400', '600', '700'] }
+        ]
+      })
     ]
   }
 }
