@@ -3,11 +3,12 @@ const GoogleFontsPlugin = require('@beyonk/google-fonts-webpack-plugin')
 
 module.exports = {
   pwa: {
-    name: 'RE/MAX Kontor Sticker Generator',
+    name: 'Sticker Generator',
+    manifestPath: '/assets/manifest.json',
     themeColor: '#0054a4',
     msTileColor: '#0054a4',
     manifestOptions: {
-      name: 'RE/MAX Kontor Sticker Generator',
+      name: 'Sticker Generator',
       background_color: '#0054a4'
     }
   },
