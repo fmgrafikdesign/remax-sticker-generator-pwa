@@ -1,5 +1,8 @@
 <template>
-    <div class="title-wrapper"><h1 class="app-title text-center">RE/MAX Sticker Generator</h1></div>
+    <div class="title-wrapper">
+      <h1 class="app-title text-center">RE/MAX Sticker Generator</h1>
+      <div class="app-subtitle">von <a href="https://fmgrafikdesign.de">Fabian Mohr</a></div>
+    </div>
 </template>
 <script>
 export default {
@@ -17,5 +20,19 @@ export default {
     color: #fff;
     font-weight: 600;
     letter-spacing: 2px
+  }
+
+  .app-subtitle {
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 5px;
+    font-weight: 600;
+    font-size: 80%
+  }
+
+  .app-subtitle a {
+    color: #fff;
+    text-decoration: none;
   }
 </style>

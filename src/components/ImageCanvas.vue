@@ -14,11 +14,13 @@
         <div class="image-upload-wrapper h100 w100">
         <input class="d-none" id="image-upload" name="image" type="file" @change="previewImage" accept="image/*" value="Bild hochladen">
 
-        <label for="image-upload" class="upload-image-label"><svg class="placeholder-vector"><use xlink:href="#icon-image"></use></svg> <br> Bild wählen</label>
+        <label for="image-upload" class="upload-image-label"><svg class="placeholder-vector" viewBox="0 0 32 32"><path d="M29.996 4c0.001 0.001 0.003 0.002 0.004 0.004v23.993c-0.001 0.001-0.002 0.003-0.004 0.004h-27.993c-0.001-0.001-0.003-0.002-0.004-0.004v-23.993c0.001-0.001 0.002-0.003 0.004-0.004h27.993zM30 2h-28c-1.1 0-2 0.9-2 2v24c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-24c0-1.1-0.9-2-2-2v0z"></path>
+          <path d="M26 9c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"></path>
+          <path d="M28 26h-24v-4l7-12 8 10h2l7-6z"></path></svg> <br> Bild wählen</label>
         </div>
       </div>
     </div>
-    <CanvasBottomBar :filename="filename" :selected-sticker="selectedSticker" :imageData="imageData" v-on:deleteSticker="deleteSticker" v-on:changePreview="onChildClick" />
+    <CanvasBottomBar :stickers="stickers" :filename="filename" :selected-sticker="selectedSticker" :imageData="imageData" v-on:deleteSticker="deleteSticker" v-on:changePreview="onChildClick" />
 
   </div>
 </template>
@@ -39,8 +41,7 @@ export default {
       imageData: '',
       selectedSticker: -1,
       filename: '',
-      stickers: [],
-      compositionWidth: 9999
+      stickers: []
     }
   },
   created () {
@@ -71,7 +72,6 @@ export default {
     previewImage: function (event) {
       const input = event.target
       if (input.files && input.files[0]) {
-        console.log(input.files[0])
         this.filename = input.files[0].name
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -83,11 +83,12 @@ export default {
 
           // Save filename for saving later
           // This is less user-friendly than I hoped
-
+          /*
           Vue.nextTick().then(() => {
             console.log('next tick: ', this.$refs.image.clientHeight)
             this.compositionWidth = this.$refs.image.clientHeight
           })
+          */
         }
         reader.readAsDataURL(input.files[0])
       }
@@ -100,9 +101,10 @@ export default {
       // Check if an image exists first
       if (this.imageData.length <= 0) {
         console.warn('Warning: Select an image first before applying stickers')
-        alert('Wähle zuerst ein Bild aus, bevor du Sticker hinzufügst')
+        this.$noty.warning('Wähle zuerst ein Bild aus, bevor du Sticker hinzufügst.')
         return
       }
+
       this.selectedSticker = this.nextStickerId
       this.disableAllOtherMoveables(this.selectedSticker)
       this.stickers.push({
@@ -110,9 +112,7 @@ export default {
         url: sticker
       })
 
-      // this.selectedSticker = this.nextStickerId
-      // this.disableAllOtherMoveables(this.selectedSticker)
-      // this.nextStickerId++
+      this.$noty.success('Sticker hinzugefügt!', { timeout: 1500 })
     }
   }
 }
@@ -143,7 +143,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #6d7275;
-  border: 2px dashed #4a4a4a;
+  border: 2px dashed #4d5361;
   border-radius: 4px;
 }
 

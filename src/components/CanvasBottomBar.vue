@@ -5,7 +5,7 @@
   <!-- Chose another image -->
     <ChoseAnotherPicture v-on:changePreview="emitToParent" v-if="imageData.length > 0" />
   <!-- save composition -->
-    <SavePicture :filename="filename" v-bind:active="imageData.length > 0" />
+    <SavePicture :stickers="stickers" :filename="filename" v-bind:active="stickers.length > 0" />
   </div>
 </template>
 
@@ -19,7 +19,8 @@ export default {
   props: {
     imageData: String,
     selectedSticker: Number,
-    filename: String
+    filename: String,
+    stickers: Array
   },
   methods: {
     emitToParent: function (event) {

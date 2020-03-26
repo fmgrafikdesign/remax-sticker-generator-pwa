@@ -1,7 +1,8 @@
 <template>
   <div class="sticker-list-wrapper">
-    <h4>Berühren zum Hinzufügen</h4>
-  <div id="sticker-list" v-bind:class="{disabled: !imageAvailable}">
+    <h2 class="section-title text-center" v-if="imageAvailable">Tippen zum Hinzufügen</h2>
+    <h2 class="section-title text-center" v-else>Wähle ein Bild, um Sticker hinzufügen zu können</h2>
+    <div id="sticker-list" v-bind:class="{disabled: !imageAvailable}">
     <div v-for="image in images" :key="image" class="image-wrapper">
       <img :src="image" @click="addSticker(image)">
     </div>
@@ -10,9 +11,7 @@
 </template>
 
 <script>
-
 // TODO: Refactor into adapter for different methods of retrieving sticker URLs
-import ImageCanvas from '@/components/ImageCanvas'
 import { EventBus } from '@/event-bus'
 
 function importAllStickers (stickers) {
@@ -32,12 +31,11 @@ export default {
   },
   created () {
     EventBus.$on('image-available', () => {
-      console.log('image available now')
       this.imageAvailable = true
     })
   },
   methods: {
-    addSticker: (sticker) => {
+    addSticker (sticker) {
       EventBus.$emit('sticker-added', sticker)
     }
   }
@@ -45,13 +43,21 @@ export default {
 </script>
 
 <style scoped>
+  .sticker-list-wrapper {
+    margin-top: 2rem
+  }
   #sticker-list {
     display: block;
   }
 
+  .section-title {
+    font-weight: bold;
+    margin-bottom: 1.5rem
+  }
+
   .image-wrapper {
     width: 50%;
-    padding: 4px;
+    padding: 1rem;
     display: inline-block;
   }
 

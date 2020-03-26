@@ -18,7 +18,7 @@ export default {
 
 <style scoped>
   .change-image-label {
-    color: #666;
+    color: #7f8082;
     font-weight: bold;
     font-size: 90%;
     display: block;
