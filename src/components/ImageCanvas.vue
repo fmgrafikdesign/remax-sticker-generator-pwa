@@ -5,7 +5,7 @@
 
       <div ref="composition" id="composition" class="composition h100 drop-shadow" v-if="imageData.length > 0">
         <!--<div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0"> -->
-          <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :image-data="sticker.url" v-bind:key="sticker.id" />
+          <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :composition-bounds="getCompositionBoundingRect()" :image-data="sticker.url" v-bind:key="sticker.id" />
         <!--</div>-->
         <img ref="image" class="preview-image img-fluid mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
       </div>
@@ -48,8 +48,40 @@ export default {
     EventBus.$on('sticker-added', sticker => {
       this.addSticker(sticker)
     })
+
+    window.addEventListener('resize', e => {
+      const updateStickerMovingBoxes = () => {
+        if (!this.$refs.stickers) return
+        this.$refs.stickers.forEach(sticker => {
+          sticker.updateRect()
+        })
+      }
+
+      const updateCompositionDimensions = () => {
+        if (!this.$refs.image) return
+
+        // Reset composition width & height
+        if (this.$refs.composition) {
+          this.$refs.composition.style.width = ''
+          this.$refs.composition.style.height = ''
+        }
+
+        const boundingRect = this.$refs.image.getBoundingClientRect()
+        // console.log('timeout 10ms: ', this.$refs.image.getBoundingClientRect(), 10)
+        this.$refs.composition.style.width = boundingRect.width + 'px'
+        this.$refs.composition.style.height = boundingRect.height + 'px'
+      }
+
+      updateStickerMovingBoxes()
+      updateCompositionDimensions()
+    })
   },
   methods: {
+    getCompositionBoundingRect () {
+      if (this.$refs.composition) {
+        return this.$refs.composition.getBoundingClientRect()
+      }
+    },
     disableAllOtherMoveables (event) {
       // console.log('disabling all other moveables... ', event)
 
@@ -69,26 +101,41 @@ export default {
     onChildClick (event) {
       this.previewImage(event)
     },
+    // TODO take exif orientation into account and/or use https://github.com/blueimp/JavaScript-Load-Image
     previewImage: function (event) {
       const input = event.target
       if (input.files && input.files[0]) {
         this.filename = input.files[0].name
         const reader = new FileReader()
         reader.onload = (e) => {
+          const resetCompositionDimensions = () => {
+            if (this.$refs.composition) {
+              this.$refs.composition.style.width = ''
+              this.$refs.composition.style.height = ''
+            }
+          }
+
+          // Reset composition width & height
+          resetCompositionDimensions()
+
           this.imageData = e.target.result
           EventBus.$emit('image-available')
           // Delete stickers on new image
           this.stickers = []
           this.selectedSticker = -1
 
-          // Save filename for saving later
-          // This is less user-friendly than I hoped
-          /*
-          Vue.nextTick().then(() => {
-            console.log('next tick: ', this.$refs.image.clientHeight)
-            this.compositionWidth = this.$refs.image.clientHeight
-          })
-          */
+          // Set composition dimensions to image dimensions after image has finished rendering.
+          // There is no hook 'onRender' (or similiar) so I'm taking a guess and hope 20ms is enough.
+
+          const updateCompositionDimensions = () => {
+            if (!this.$refs.image) return
+            const boundingRect = this.$refs.image.getBoundingClientRect()
+            // console.log('timeout 10ms: ', this.$refs.image.getBoundingClientRect(), 10)
+            this.$refs.composition.style.width = boundingRect.width + 'px'
+            this.$refs.composition.style.height = boundingRect.height + 'px'
+          }
+
+          setTimeout(updateCompositionDimensions, 20)
         }
         reader.readAsDataURL(input.files[0])
       }
@@ -123,6 +170,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
+    max-width: 100%;
   }
 
 .preview-image {
@@ -137,6 +185,7 @@ export default {
   margin: auto;
   min-height: 0;
   min-width: 0;
+  width: 100%
 }
 
 .image-placeholder {
@@ -181,6 +230,7 @@ export default {
   max-width: 100%;
   position: relative;
   overflow: hidden;
+  margin: 0 auto
 }
 
   .placeholder-vector {

@@ -21,7 +21,7 @@ export default {
   components: {
     Moveable
   },
-  props: ['imageData', 'id'],
+  props: ['imageData', 'id', 'compositionBounds'],
   data: () => ({
     moveable: {
       draggable: true,
@@ -32,15 +32,12 @@ export default {
       scalable: true,
       throttleScale: 0,
       rotatable: true,
-      throttleRotate: 0
+      throttleRotate: 0,
+      innerBounds: {
+        left: 0, top: 20, width: 20, height: 40
+      }
     }
   }),
-  mounted () {
-    window.addEventListener('resize', e => {
-      this.$refs.moveable.updateRect()
-      // this.$refs.moveable.updateTarget()
-    })
-  },
   methods: {
     enableMoveable () {
       this.$emit('disable-all-other-moveables', this.id)
@@ -65,6 +62,18 @@ export default {
     },
     handleDrag ({ target, left, top }) {
       // console.log('onDrag left, top', left, top)
+      if (this.compositionBounds && target.clientWidth && target.clientHeight) {
+        // console.log(this.compositionBounds)
+        // console.log(target.getBoundingClientRect())
+        // TODO find function to limit sticker drag. Maybe. Not sure. Wish overflow-x would work as expecte with this library
+        // left = Math.min(Math.max(0, left), this.compositionBounds.width - (target.getBoundingClientRect().width / 2))
+        // @1x: left min bound: 0px
+        // @2x: left min bound: 50px
+        // @4x: left min bound: 150px
+        // @0.5x: left min bound: -25px
+        // console.log(left)
+        // top = Math.min(Math.max(0, top), this.compositionBounds.height - (target.getBoundingClientRect().height / 2))
+      }
       target.style.left = `${left}px`
       target.style.top = `${top}px`
     },

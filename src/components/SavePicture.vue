@@ -35,6 +35,7 @@ export default {
       const rect = composition.getBoundingClientRect()
 
       // Render html-composition to a canvas and save the canvas
+      console.log(rect)
       html2canvas(composition, {
         scrollX: 0,
         scrollY: -window.scrollY,
