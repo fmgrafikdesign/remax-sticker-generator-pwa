@@ -34,6 +34,7 @@ export default {
       const composition = document.querySelector('#composition')
       const rect = composition.getBoundingClientRect()
 
+      // TODO saving doesn't work on iOS Safari & Chrome
       // Render html-composition to a canvas and save the canvas
       console.log(rect)
       html2canvas(composition, {
