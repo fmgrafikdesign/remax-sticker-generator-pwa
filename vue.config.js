@@ -51,7 +51,8 @@ module.exports = {
       new GoogleFontsPlugin({
         fonts: [
           { family: 'Roboto', variants: ['400', '600', '700'] }
-        ]
+        ],
+        apiUrl: "https://gwfh.mranftl.com/api/fonts",
       })
     ]
   }
