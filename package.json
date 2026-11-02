@@ -4,35 +4,40 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit -p tsconfig.app.json && vite build",
-    "preview": "vite preview",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json",
+    "dev": "nuxt dev --host localhost",
+    "build": "nuxt build",
+    "preview": "node --env-file-if-exists=.env .output/server/index.mjs",
+    "type-check": "nuxt typecheck",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:integration": "node --env-file-if-exists=.env node_modules/vitest/vitest.mjs run --config vitest.integration.config.ts",
+    "seed:dev": "node --env-file-if-exists=.env scripts/seed.ts --mode=dev",
+    "seed:prod": "node scripts/seed.ts --mode=prod",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
     "@fontsource/roboto": "^5.3.0",
+    "@vite-pwa/nuxt": "^1.1.1",
     "file-saver": "^2.0.5",
     "moveable": "^0.53.0",
+    "nuxt": "^4.6.4",
+    "sharp": "^0.35.5",
     "vue": "^3.5.44"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^24.0.0",
-    "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-typescript": "^14.9.0",
-    "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.14.0",
     "eslint-plugin-vue": "^10.12.0",
     "globals": "^17.14.0",
     "typescript": "~6.0.3",
     "vite": "^8.3.5",
-    "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.1.0",
     "vue-tsc": "^3.3.14"
   }
