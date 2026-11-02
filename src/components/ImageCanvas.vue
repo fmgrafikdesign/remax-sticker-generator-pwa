@@ -1,191 +1,83 @@
-<template>
-  <div class="image-canvas h100">
-    <AppTitle />
-    <div class="image-preview-wrapper" v-bind:class="{h50: imageData.length === 0, w100: imageData.length === 0}" >
+<script setup lang="ts">
+import AppTitle from '@/components/AppTitle.vue'
+import CanvasBottomBar from '@/components/CanvasBottomBar.vue'
+import PlacedSticker from '@/components/PlacedSticker.vue'
+import { useComposition } from '@/composables/useComposition'
 
-      <div ref="composition" id="composition" class="composition h100 drop-shadow" v-if="imageData.length > 0">
-        <!--<div ref="sticker_holder" class="sticker w100 h100 position-absolute top0 left0"> -->
-          <Sticker ref="stickers" v-on:disable-all-other-moveables="disableAllOtherMoveables" v-for="sticker in stickers" :id="sticker.id" :composition-bounds="getCompositionBoundingRect()" :image-data="sticker.url" v-bind:key="sticker.id" />
-        <!--</div>-->
-        <img ref="image" class="preview-image img-fluid mx-auto" :src="imageData" alt="Lade dein Bild hoch.">
-      </div>
+const { imageUrl, stickers, selectedId, compositionEl, hasImage, setImage } = useComposition()
 
-      <div class="file-upload-form drop-shadow image-placeholder" v-if="imageData.length === 0">
-        <div class="image-upload-wrapper h100 w100">
-        <input class="d-none" id="image-upload" name="image" type="file" @change="previewImage" accept="image/*" value="Bild hochladen">
-
-        <label for="image-upload" class="upload-image-label"><svg class="placeholder-vector" viewBox="0 0 32 32"><path d="M29.996 4c0.001 0.001 0.003 0.002 0.004 0.004v23.993c-0.001 0.001-0.002 0.003-0.004 0.004h-27.993c-0.001-0.001-0.003-0.002-0.004-0.004v-23.993c0.001-0.001 0.002-0.003 0.004-0.004h27.993zM30 2h-28c-1.1 0-2 0.9-2 2v24c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-24c0-1.1-0.9-2-2-2v0z"></path>
-          <path d="M26 9c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"></path>
-          <path d="M28 26h-24v-4l7-12 8 10h2l7-6z"></path></svg> <br> Bild wählen</label>
-        </div>
-      </div>
-    </div>
-    <CanvasBottomBar :stickers="stickers" :filename="filename" :selected-sticker="selectedSticker" :imageData="imageData" v-on:deleteSticker="deleteSticker" v-on:changePreview="onChildClick" />
-
-  </div>
-</template>
-
-<script>
-import CanvasBottomBar from '@/components/CanvasBottomBar'
-import { EventBus } from '@/event-bus'
-import Sticker from '@/components/Sticker'
-import Vue from 'vue'
-import AppTitle from '@/components/AppTitle'
-
-export default {
-  name: 'ImageCanvas',
-  components: { AppTitle, Sticker, CanvasBottomBar },
-  data: function () {
-    return {
-      nextStickerId: 0,
-      imageData: '',
-      selectedSticker: -1,
-      filename: '',
-      stickers: []
-    }
-  },
-  created () {
-    EventBus.$on('sticker-added', sticker => {
-      this.addSticker(sticker)
-    })
-
-    window.addEventListener('resize', e => {
-      const updateStickerMovingBoxes = () => {
-        if (!this.$refs.stickers) return
-        this.$refs.stickers.forEach(sticker => {
-          sticker.updateRect()
-        })
-      }
-
-      const updateCompositionDimensions = () => {
-        if (!this.$refs.image) return
-
-        // Reset composition width & height
-        if (this.$refs.composition) {
-          this.$refs.composition.style.width = ''
-          this.$refs.composition.style.height = ''
-        }
-
-        const boundingRect = this.$refs.image.getBoundingClientRect()
-        // console.log('timeout 10ms: ', this.$refs.image.getBoundingClientRect(), 10)
-        this.$refs.composition.style.width = boundingRect.width + 'px'
-        this.$refs.composition.style.height = boundingRect.height + 'px'
-      }
-
-      updateStickerMovingBoxes()
-      updateCompositionDimensions()
-    })
-  },
-  methods: {
-    getCompositionBoundingRect () {
-      if (this.$refs.composition) {
-        return this.$refs.composition.getBoundingClientRect()
-      }
-    },
-    disableAllOtherMoveables (event) {
-      // console.log('disabling all other moveables... ', event)
-
-      if (!this.$refs.stickers || this.$refs.stickers.length <= 0) return
-
-      // console.log(this.$refs.stickers)
-
-      this.selectedSticker = event
-      this.$refs.stickers.forEach(sticker => {
-        // console.log('comparing', sticker.id, event)
-        if (sticker.id !== event) {
-          // console.log('disabling moveable for sticker #', sticker.id)
-          sticker.disableMoveable()
-        }
-      })
-    },
-    onChildClick (event) {
-      this.previewImage(event)
-    },
-    // TODO take exif orientation into account and/or use https://github.com/blueimp/JavaScript-Load-Image
-    previewImage: function (event) {
-      const input = event.target
-      if (input.files && input.files[0]) {
-        this.filename = input.files[0].name
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const resetCompositionDimensions = () => {
-            if (this.$refs.composition) {
-              this.$refs.composition.style.width = ''
-              this.$refs.composition.style.height = ''
-            }
-          }
-
-          // Reset composition width & height
-          resetCompositionDimensions()
-
-          this.imageData = e.target.result
-          EventBus.$emit('image-available')
-          // Delete stickers on new image
-          this.stickers = []
-          this.selectedSticker = -1
-
-          // Set composition dimensions to image dimensions after image has finished rendering.
-          // There is no hook 'onRender' (or similiar) so I'm taking a guess and hope 20ms is enough.
-
-          const updateCompositionDimensions = () => {
-            if (!this.$refs.image) return
-            const boundingRect = this.$refs.image.getBoundingClientRect()
-            // console.log('timeout 10ms: ', this.$refs.image.getBoundingClientRect(), 10)
-            this.$refs.composition.style.width = boundingRect.width + 'px'
-            this.$refs.composition.style.height = boundingRect.height + 'px'
-          }
-
-          setTimeout(updateCompositionDimensions, 20)
-        }
-        reader.readAsDataURL(input.files[0])
-      }
-    },
-    deleteSticker () {
-      this.stickers = this.stickers.filter(sticker => sticker.id !== this.selectedSticker)
-      this.selectedSticker = -1
-    },
-    addSticker: function (sticker) {
-      // Check if an image exists first
-      if (this.imageData.length <= 0) {
-        console.warn('Warning: Select an image first before applying stickers')
-        this.$noty.warning('Wähle zuerst ein Bild aus, bevor du Sticker hinzufügst.')
-        return
-      }
-
-      this.selectedSticker = this.nextStickerId
-      this.disableAllOtherMoveables(this.selectedSticker)
-      this.stickers.push({
-        id: this.nextStickerId++,
-        url: sticker
-      })
-
-      this.$noty.success('Sticker hinzugefügt!', { timeout: 1500 })
-    }
-  }
+function onFileChange(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) setImage(file)
 }
 </script>
 
-<style scoped>
-  .image-canvas {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-width: 100%;
-  }
+<template>
+  <div class="image-canvas h100">
+    <AppTitle />
+    <div class="image-preview-wrapper" :class="{ h50: !hasImage, w100: !hasImage, 'has-image': hasImage }">
+      <div
+        v-if="hasImage"
+        :ref="element => { compositionEl = element as HTMLElement | null }"
+        class="composition drop-shadow"
+      >
+        <PlacedSticker
+          v-for="sticker in stickers"
+          :id="sticker.id"
+          :key="sticker.id"
+          :url="sticker.url"
+          :selected="sticker.id === selectedId"
+        />
+        <img class="preview-image" :src="imageUrl" alt="Lade dein Bild hoch.">
+      </div>
 
-.preview-image {
+      <div v-else class="file-upload-form drop-shadow image-placeholder">
+        <div class="image-upload-wrapper h100 w100">
+          <input id="image-upload" class="d-none" name="image" type="file" accept="image/*" @change="onFileChange">
+
+          <label for="image-upload" class="upload-image-label"><svg class="placeholder-vector" viewBox="0 0 32 32"><path d="M29.996 4c0.001 0.001 0.003 0.002 0.004 0.004v23.993c-0.001 0.001-0.002 0.003-0.004 0.004h-27.993c-0.001-0.001-0.003-0.002-0.004-0.004v-23.993c0.001-0.001 0.002-0.003 0.004-0.004h27.993zM30 2h-28c-1.1 0-2 0.9-2 2v24c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-24c0-1.1-0.9-2-2-2v0z"/>
+            <path d="M26 9c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"/>
+            <path d="M28 26h-24v-4l7-12 8 10h2l7-6z"/></svg> <br> Bild wählen</label>
+        </div>
+      </div>
+    </div>
+    <CanvasBottomBar />
+  </div>
+</template>
+
+<style scoped>
+.image-canvas {
+  display: flex;
+  flex-direction: column;
   max-width: 100%;
-  max-height: 100%;
+  position: relative;
+  background-color: #292b2f;
+}
+
+/* The photo never exceeds the space between title and bottom bar; width and height limits keep its aspect ratio. */
+.preview-image {
+  max-width: 100cqw;
+  max-height: 100cqh;
   height: auto;
   display: block;
 }
 
 .image-preview-wrapper {
+  position: relative;
   padding: 1rem;
   margin: auto;
   min-height: 0;
   min-width: 0;
   width: 100%
+}
+
+.image-preview-wrapper.has-image {
+  flex: 1 1 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  container-type: size;
 }
 
 .image-placeholder {
@@ -196,10 +88,10 @@ export default {
   border-radius: 4px;
 }
 
-  .image-upload-wrapper {
-    display: table;
-    padding-bottom: 10px
-  }
+.image-upload-wrapper {
+  display: table;
+  padding-bottom: 10px
+}
 
 .upload-image-label {
   width: 100%;
@@ -220,25 +112,23 @@ export default {
     0 10.8px 23.6px rgba(0, 0, 0, 0.037),
     0 15.1px 30.6px rgba(0, 0, 0, 0.057),
     0 19.1px 36.1px rgba(0, 0, 0, 0.081),
-    0 33px 60px rgba(0, 0, 0, 0.12)
-;
-
+    0 33px 60px rgba(0, 0, 0, 0.12);
 }
 
+/* shrink-wraps the rendered photo, so stickers and the saved picture never include empty margins */
 .composition {
-  max-height: 100%;
-  max-width: 100%;
   position: relative;
   overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
   margin: 0 auto
 }
 
-  .placeholder-vector {
-    width: 25%;
-    max-width: 64px;
-    height: 92px;
-    stroke: #b0b3bb;
-    fill: #B0B3BB;
-  }
-
+.placeholder-vector {
+  width: 25%;
+  max-width: 64px;
+  height: 92px;
+  stroke: #b0b3bb;
+  fill: #B0B3BB;
+}
 </style>

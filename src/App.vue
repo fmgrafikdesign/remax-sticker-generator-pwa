@@ -1,28 +1,20 @@
+<script setup lang="ts">
+import ImageCanvas from '@/components/ImageCanvas.vue'
+import StickerList from '@/components/StickerList.vue'
+import ToastHost from '@/components/ToastHost.vue'
+import { provideComposition } from '@/composables/useComposition'
+
+provideComposition()
+</script>
+
 <template>
   <div id="app">
-    <image-wrapper/>
+    <ImageCanvas />
     <hr>
     <StickerList />
-    <!--
-    <hr>
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-    -->
+    <ToastHost />
   </div>
 </template>
-
-<script lang="ts">
-import Vue from 'vue'
-import StickerList from '@/components/StickerList.vue'
-import ImageWrapper from '@/components/ImageWrapper.vue'
-
-export default Vue.extend({
-  name: 'App',
-  components: {
-    ImageWrapper,
-    StickerList
-  }
-})
-</script>
 
 <style>
 #app {

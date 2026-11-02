@@ -1,16 +1,7 @@
-import Vue from 'vue'
-import VueNoty from 'vuejs-noty'
-import App from './App.vue'
-import './registerServiceWorker'
+import { createApp } from 'vue'
+import '@fontsource/roboto/latin-400.css'
+import '@fontsource/roboto/latin-700.css'
 import './assets/main.css'
+import App from './App.vue'
 
-Vue.use(VueNoty, {
-  layout: 'topCenter',
-  theme: 'metroui',
-  timeout: 3000
-})
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App)
-}).$mount('#app')
+createApp(App).mount('#app')
