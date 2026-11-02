@@ -1,18 +1,14 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useComposition } from '@/composables/useComposition'
+import { useStickerCatalog } from '@/composables/useStickerCatalog'
 import { useToast } from '@/composables/useToast'
 
-// TODO: Refactor into adapter for different methods of retrieving sticker URLs
-const images = Object.values(
-  import.meta.glob<string>('@/assets/sticker/*.{png,jpg,jpeg,svg}', {
-    eager: true,
-    query: '?url',
-    import: 'default'
-  })
-)
-
 const { hasImage, addSticker } = useComposition()
+const catalog = useStickerCatalog()
 const toast = useToast()
+
+onMounted(() => void catalog.load())
 
 function onStickerClick(url: string) {
   if (addSticker(url)) {
@@ -27,9 +23,12 @@ function onStickerClick(url: string) {
   <div class="sticker-list-wrapper">
     <h2 v-if="hasImage" class="section-title text-center">Tippen zum Hinzufügen</h2>
     <h2 v-else class="section-title text-center">Wähle erst ein Bild aus, um Sticker hinzufügen zu können.</h2>
+    <p v-if="catalog.state.value === 'error' && catalog.stickers.value.length === 0" class="section-title text-center">
+      Sticker konnten nicht geladen werden.
+    </p>
     <div id="sticker-list" :class="{ disabled: !hasImage }">
-      <div v-for="image in images" :key="image" class="image-wrapper">
-        <img :src="image" alt="Sticker" @click="onStickerClick(image)">
+      <div v-for="sticker in catalog.stickers.value" :key="sticker.id" class="image-wrapper">
+        <img :src="sticker.thumbnailUrl" alt="Sticker" loading="lazy" @click="onStickerClick(sticker.url)">
       </div>
     </div>
   </div>

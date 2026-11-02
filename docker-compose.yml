@@ -1,0 +1,50 @@
+x-s3: &s3
+  S3_ENDPOINT: http://minio:9000
+  S3_REGION: us-east-1
+  S3_BUCKET: stickers
+  S3_ACCESS_KEY_ID: minioadmin
+  S3_SECRET_ACCESS_KEY: minioadmin
+  S3_FORCE_PATH_STYLE: "true"
+
+services:
+  minio:
+    # MinIO stopped publishing images; see README "Local S3".
+    image: ${MINIO_IMAGE:-minio/minio:latest}
+    pull_policy: missing
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "${MINIO_PORT:-9100}:9000"
+      - "${MINIO_CONSOLE_PORT:-9101}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  seed:
+    build: .
+    image: sticker-generator-pwa:local
+    command: ["node", "scripts/seed.ts", "--mode=dev"]
+    environment: *s3
+    depends_on:
+      minio:
+        condition: service_healthy
+
+  app:
+    image: sticker-generator-pwa:local
+    environment:
+      <<: *s3
+      ADMIN_TOKENS: ${ADMIN_TOKENS:-dev12345}
+    ports:
+      - "3000:3000"
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+
+volumes:
+  minio-data:
