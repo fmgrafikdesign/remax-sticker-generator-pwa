@@ -31,6 +31,8 @@ export interface Composition {
   addSticker(url: string): boolean
   selectSticker(id: number): void
   deleteSelectedSticker(): void
+  /** Drops a sticker regardless of selection, e.g. when its image can't be loaded. */
+  removeSticker(id: number): void
 }
 
 export function createComposition(): Composition {
@@ -68,6 +70,11 @@ export function createComposition(): Composition {
     selectedId.value = null
   }
 
+  function removeSticker(id: number) {
+    stickers.value = stickers.value.filter(sticker => sticker.id !== id)
+    if (selectedId.value === id) selectedId.value = null
+  }
+
   return {
     imageUrl,
     filename,
@@ -78,7 +85,8 @@ export function createComposition(): Composition {
     setImage,
     addSticker,
     selectSticker,
-    deleteSelectedSticker
+    deleteSelectedSticker,
+    removeSticker
   }
 }
 
