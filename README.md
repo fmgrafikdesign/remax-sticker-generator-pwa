@@ -1,7 +1,7 @@
-# remax-sticker-generator-pwa
+# sticker-generator-pwa
 
-A small Vue-based PWA to get my feet wet with the vue.js framework and also make an useful application for RE/MAX SLS.
-Pick a photo, stick RE/MAX stickers on it (drag, scale, rotate), and save the result as a JPEG.
+A small Vue-based PWA to get my feet wet with the vue.js framework and also make an useful application for Immobilien Kontor Saarlouis (IKS).
+Pick a photo, stick IKS stickers on it (drag, scale, rotate), and save the result as a JPEG.
 
 Built with Nuxt 4 (client-rendered, `<script setup>` components), TypeScript and `@vite-pwa/nuxt`.
 Stickers live in an S3-compatible bucket; there is no database. Requires Node 22.22+ or 24.15+.

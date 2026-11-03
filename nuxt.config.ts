@@ -7,11 +7,11 @@ export default defineNuxtConfig({
   modules: ['@vite-pwa/nuxt'],
   // static app shell, precached by the service worker as offline navigation fallback
   nitro: { prerender: { routes: ['/'] } },
-  css: ['@fontsource/roboto/latin-400.css', '@fontsource/roboto/latin-700.css', '~/assets/main.css'],
+  css: ['@fontsource/source-sans-pro/latin-400.css', '@fontsource/source-sans-pro/latin-700.css', '~/assets/main.css'],
   app: {
     head: {
       htmlAttrs: { lang: 'de' },
-      title: 'RE/MAX Immobilien Kontor Sticker Generator',
+      title: 'Immobilien Kontor Saarlouis Sticker Generator',
       meta: [
         { name: 'viewport', content: 'width=device-width,initial-scale=1.0' },
         { name: 'theme-color', content: themeColor },
@@ -30,7 +30,7 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
-      name: 'RE/MAX Kontor Sticker Generator',
+      name: 'Immobilien Kontor Saarlouis Sticker Generator',
       short_name: 'Sticker Generator',
       lang: 'de',
       display: 'standalone',
