@@ -97,7 +97,13 @@ async function deleteSticker(id: string) {
   <div class="admin">
     <AppTitle />
     <main class="admin-content">
-      <NuxtLink to="/" class="back-link">← Zurück zum Generator</NuxtLink>
+      <NuxtLink to="/" class="back-link">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5" />
+          <path d="m11 6-6 6 6 6" />
+        </svg>
+        Zurück zum Generator
+      </NuxtLink>
 
       <section class="panel">
         <h2 class="panel-title">Zugang</h2>
@@ -110,20 +116,29 @@ async function deleteSticker(id: string) {
             placeholder="Zugangscode"
             aria-label="Zugangscode"
           >
-          <button class="admin-button" type="submit">Prüfen</button>
-          <button v-if="admin.token.value" class="admin-button secondary" type="button" @click="logout">Abmelden</button>
+          <button class="btn btn--primary" type="submit">Prüfen</button>
+          <button v-if="admin.token.value" class="btn" type="button" @click="logout">Abmelden</button>
         </form>
         <p class="token-status" :class="`status-${admin.status.value}`" data-testid="token-status">
+          <span class="status-dot" aria-hidden="true" />
           {{ statusText[admin.status.value] }}
         </p>
       </section>
 
       <section v-if="isAdmin" class="panel" data-testid="sticker-management">
-        <h2 class="panel-title">Sticker verwalten</h2>
+        <div class="panel-heading">
+          <h2 class="panel-title">Sticker verwalten</h2>
+          <span v-if="catalog.stickers.value.length" class="count">{{ catalog.stickers.value.length }}</span>
+        </div>
         <p class="hint">PNG oder WebP. Transparenz bleibt erhalten; große Bilder werden auf max. 2048 px verkleinert und komprimiert.</p>
-        <label class="admin-button upload-button" :class="{ busy: uploading }">
+        <label class="btn btn--primary upload-button" :class="{ busy: uploading }">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4" />
+            <path d="m7 9 5-5 5 5" />
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+          </svg>
           {{ uploading ? 'Lädt hoch …' : 'Sticker hochladen' }}
-          <input class="d-none" type="file" accept="image/png,image/webp" multiple :disabled="uploading" @change="onFilesChosen">
+          <input class="sr-only" type="file" accept="image/png,image/webp" multiple :disabled="uploading" @change="onFilesChosen">
         </label>
 
         <p v-if="catalog.state.value === 'error'" class="hint">Sticker konnten nicht geladen werden.</p>
@@ -131,7 +146,7 @@ async function deleteSticker(id: string) {
           <li v-for="sticker in catalog.stickers.value" :key="sticker.id" class="sticker-tile">
             <img :src="sticker.thumbnailUrl" alt="Sticker" loading="lazy">
             <button
-              class="delete-tile"
+              class="btn btn--danger btn--sm"
               type="button"
               :disabled="deleting === sticker.id"
               @click="deleteSticker(sticker.id)"
@@ -147,66 +162,133 @@ async function deleteSticker(id: string) {
 
 <style scoped>
 .admin {
-  min-height: 100%;
-  background-color: #292b2f;
-  color: #dce0ea;
+  min-height: 100dvh;
 }
 
 .admin-content {
-  max-width: 720px;
+  max-width: 60rem;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.25rem var(--page-gutter) 3rem;
 }
 
 .back-link {
-  display: inline-block;
-  color: #dce0ea;
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  font-weight: 600;
+  color: var(--brand);
   text-decoration: none;
-  margin: 0.5rem 0 1rem;
+  border-radius: 8px;
+}
+
+.back-link:hover {
+  background-color: var(--brand-tint);
 }
 
 .panel {
-  background-color: #34373c;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
 }
 
 .panel-title {
-  font-weight: bold;
-  font-size: 110%;
-  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.count {
+  padding: 0.125rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--brand);
+  background-color: var(--brand-tint);
+  border-radius: 999px;
 }
 
 .token-form {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .token-input {
-  flex: 1 1 12rem;
-  padding: 0.6rem 0.75rem;
-  font: inherit;
-  border: 0;
-  border-radius: 4px;
+  flex: 1 1 14rem;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  background-color: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.admin-button {
-  display: inline-block;
-  padding: 0.6rem 1rem;
-  font: inherit;
-  font-weight: bold;
-  color: #fff;
-  background-color: #0054a4;
-  border: 0;
-  border-radius: 4px;
+.token-input::placeholder {
+  color: var(--muted);
+}
+
+.token-input:hover {
+  border-color: var(--muted);
+}
+
+.token-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-tint-strong);
+}
+
+.token-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  background-color: var(--bg);
+  border-radius: 999px;
+}
+
+.status-dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--muted);
+  border-radius: 50%;
+}
+
+.status-valid { color: var(--success); background-color: var(--success-tint); }
+.status-valid .status-dot { background-color: var(--success); }
+.status-invalid { color: var(--danger); background-color: var(--danger-tint); }
+.status-invalid .status-dot { background-color: var(--danger); }
+
+.hint {
+  margin: 0.375rem 0 1rem;
+  max-width: 40rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.upload-button {
   cursor: pointer;
 }
 
-.admin-button.secondary {
-  background-color: #6b6b6b;
+.upload-button:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
 }
 
 .upload-button.busy {
@@ -214,25 +296,11 @@ async function deleteSticker(id: string) {
   cursor: progress;
 }
 
-.token-status,
-.hint {
-  margin-top: 0.75rem;
-  line-height: 1.4;
-  font-size: 90%;
-}
-
-.status-valid { color: #7bd88f; }
-.status-invalid { color: #ff7b72; }
-
-.hint {
-  margin-bottom: 0.75rem;
-}
-
 .sticker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
   gap: 0.75rem;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
 .sticker-tile {
@@ -240,25 +308,18 @@ async function deleteSticker(id: string) {
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.5rem;
-  border-radius: 4px;
-  /* checkerboard shows transparency */
-  background: repeating-conic-gradient(#4a4d52 0% 25%, #3d4045 0% 50%) 50% / 16px 16px;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .sticker-tile img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-}
-
-.delete-tile {
-  padding: 0.4rem;
-  font: inherit;
-  font-weight: bold;
-  color: #fff;
-  background-color: #e11b22;
-  border: 0;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 0.375rem;
+  border-radius: 6px;
+  /* checkerboard shows transparency */
+  background: var(--checker);
 }
 </style>

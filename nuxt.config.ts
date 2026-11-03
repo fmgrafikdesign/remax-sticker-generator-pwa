@@ -7,7 +7,12 @@ export default defineNuxtConfig({
   modules: ['@vite-pwa/nuxt'],
   // static app shell, precached by the service worker as offline navigation fallback
   nitro: { prerender: { routes: ['/'] } },
-  css: ['@fontsource/source-sans-pro/latin-400.css', '@fontsource/source-sans-pro/latin-700.css', '~/assets/main.css'],
+  css: [
+    '@fontsource/source-sans-pro/latin-400.css',
+    '@fontsource/source-sans-pro/latin-600.css',
+    '@fontsource/source-sans-pro/latin-700.css',
+    '~/assets/main.css'
+  ],
   app: {
     head: {
       htmlAttrs: { lang: 'de' },
@@ -28,7 +33,8 @@ export default defineNuxtConfig({
     }
   },
   pwa: {
-    registerType: 'autoUpdate',
+    // a new version waits until the user accepts it (see UpdatePrompt.vue): reloading would discard an unsaved edit
+    registerType: 'prompt',
     manifest: {
       name: 'Immobilien Kontor Saarlouis Sticker Generator',
       short_name: 'Sticker Generator',
@@ -65,6 +71,7 @@ export default defineNuxtConfig({
         }
       ]
     },
-    client: { installPrompt: false }
+    // long-lived sessions only check for a new sw.js on navigation, so also poll hourly (and on resume, see UpdatePrompt.vue)
+    client: { installPrompt: false, periodicSyncForUpdates: 3600 }
   }
 })

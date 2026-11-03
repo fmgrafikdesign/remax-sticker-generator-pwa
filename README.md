@@ -18,6 +18,11 @@ Stickers live in an S3-compatible bucket; there is no database. Requires Node 22
 - **Tokens** come from `ADMIN_TOKENS` (comma-separated, e.g. `ADMIN_TOKENS=a1b2c3d4,e5f6g7h8`). Empty disables admin access.
 - **Offline**: the app shell is precached; the sticker list is NetworkFirst (3 s timeout) and sticker images CacheFirst,
   so stickers seen before work offline. Uploading and deleting need a connection.
+- **Updates**: a new deploy is not applied silently, because a reload would discard an unsaved photo. The browser checks
+  for a new `sw.js` on navigation, hourly (`pwa.client.periodicSyncForUpdates`) and when the app becomes visible again. A
+  new version then shows "Neue Version verfügbar" (`UpdatePrompt.vue`); "Jetzt aktualisieren" reloads into it, "Später"
+  keeps the current one until the next full page load. Serve `/sw.js` and `/manifest.webmanifest` with
+  `Cache-Control: no-cache` (or `max-age=0`), otherwise a CDN or proxy can hide new versions from users.
 
 ## Seeding
 
