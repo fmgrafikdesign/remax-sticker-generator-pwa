@@ -34,17 +34,13 @@ async function savePicture() {
 </script>
 
 <template>
-  <div class="save-sticker-wrapper ml-auto button-wrapper" @click="savePicture">
-    <div class="save-button button" :class="{ active }">
-      <svg class="icon icon-download" viewBox="0 0 32 32">
-        <path d="M16 18l8-8h-6v-8h-4v8h-6zM23.273 14.727l-2.242 2.242 8.128 3.031-13.158 4.907-13.158-4.907 8.127-3.031-2.242-2.242-8.727 3.273v8l16 6 16-6v-8z" />
-      </svg>
-    </div>
-  </div>
+  <!-- Stays clickable while inactive so the click can explain what is missing. -->
+  <button class="btn btn--primary" type="button" :aria-disabled="!active" @click="savePicture">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3v12" />
+      <path d="m7 11 5 5 5-5" />
+      <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+    </svg>
+    <span>Speichern</span>
+  </button>
 </template>
-
-<style scoped>
-.active {
-  background-color: forestgreen;
-}
-</style>

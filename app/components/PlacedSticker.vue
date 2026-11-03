@@ -32,6 +32,8 @@ function enableMoveable() {
     scalable: true,
     rotatable: true,
     keepRatio: true,
+    // keepRatio makes the edge handles redundant; corners only keeps small stickers visible
+    renderDirections: ['nw', 'ne', 'sw', 'se'],
     throttleDrag: 0,
     throttleScale: 0,
     throttleRotate: 0
@@ -98,7 +100,7 @@ watch(() => props.selected, selected => {
 
 <template>
   <div ref="element" class="placed-sticker" :class="{ placed }" @click="selectSticker(id)">
-    <img :src="url" class="img-fluid" alt="Sticker" @load="onImageLoad" @error="onImageError">
+    <img :src="url" alt="Sticker" @load="onImageLoad" @error="onImageError">
   </div>
 </template>
 
@@ -118,5 +120,7 @@ watch(() => props.selected, selected => {
 
 .placed-sticker img {
   display: block;
+  max-width: 100%;
+  height: auto;
 }
 </style>
