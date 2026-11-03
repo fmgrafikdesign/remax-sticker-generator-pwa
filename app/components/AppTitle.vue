@@ -4,7 +4,7 @@ const author = { name: 'Fabian Mohr', url: 'https://fmgrafikdesign.de' }
 
 <template>
   <div class="title-wrapper">
-    <h1 class="app-title text-center">RE/MAX Sticker Generator</h1>
+    <h1 class="app-title text-center">IKS Sticker Generator</h1>
     <div class="app-subtitle">von <a :href="author.url" target="_blank" rel="noopener">{{ author.name }}</a></div>
   </div>
 </template>
