@@ -46,13 +46,13 @@ onBeforeUnmount(() => document.removeEventListener('visibilitychange', checkForU
   margin: 0 auto;
   padding: 1rem;
   background-color: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-pop);
 }
 
 .update-title {
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
 .update-text {

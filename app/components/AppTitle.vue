@@ -16,8 +16,9 @@ const author = { name: 'Fabian Mohr', url: 'https://fmgrafikdesign.de' }
       </span>
       <div class="app-heading">
         <h1 class="app-title">IKS Sticker Generator</h1>
-        <p class="app-byline">von <a :href="author.url" target="_blank" rel="noopener">{{ author.name }}</a></p>
+        <p class="eyebrow app-byline">von <a :href="author.url" target="_blank" rel="noopener">{{ author.name }}</a></p>
       </div>
+      <p class="eyebrow app-client">Immobilien Kontor Saarlouis</p>
     </div>
   </header>
 </template>
@@ -27,34 +28,26 @@ const author = { name: 'Fabian Mohr', url: 'https://fmgrafikdesign.de' }
   position: relative;
   z-index: 10;
   height: var(--header-h);
-  color: #fff;
-  background: linear-gradient(135deg, #0a63bb 0%, var(--brand) 45%, #003d7a 100%);
-  box-shadow: 0 1px 0 rgb(255 255 255 / 12%) inset, 0 4px 16px -4px rgb(0 40 90 / 45%);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .app-header-inner {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   height: 100%;
-  max-width: 100rem;
-  margin: 0 auto;
-  padding: 0 var(--page-gutter);
+  padding: 0 var(--page-gutter) 0 0;
 }
 
 .app-logo {
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  background-color: rgb(255 255 255 / 16%);
-  border: 1px solid rgb(255 255 255 / 25%);
-  border-radius: 0.65rem;
-}
-
-.app-logo .icon {
-  width: 1.375rem;
-  height: 1.375rem;
+  flex: none;
+  width: var(--header-h);
+  height: 100%;
+  color: var(--surface);
+  background-color: var(--ink);
 }
 
 .app-heading {
@@ -62,42 +55,48 @@ const author = { name: 'Fabian Mohr', url: 'https://fmgrafikdesign.de' }
 }
 
 .app-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: 0.02em;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 .app-byline {
   margin-top: 1px;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  color: rgb(255 255 255 / 75%);
+  font-size: 0.6875rem;
 }
 
 .app-byline a {
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 2px;
   border-radius: 3px;
 }
 
 .app-byline a:hover {
-  text-decoration: underline;
+  color: var(--accent);
+  text-decoration-color: currentColor;
 }
 
-.app-byline a:focus-visible {
-  box-shadow: 0 0 0 3px var(--brand), 0 0 0 5px #fff;
+.app-client {
+  display: none;
+  margin-left: auto;
+}
+
+@media (min-width: 48rem) {
+  .app-client {
+    display: block;
+  }
 }
 
 @media (min-width: 60rem) {
   .app-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 
-  .app-logo {
-    width: 2.5rem;
-    height: 2.5rem;
+  .app-byline {
+    font-size: 0.75rem;
   }
 }
 </style>
