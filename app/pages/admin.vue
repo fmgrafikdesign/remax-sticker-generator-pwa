@@ -94,18 +94,24 @@ async function deleteSticker(id: string) {
 </script>
 
 <template>
-  <div class="admin">
+  <div class="frame admin">
     <AppTitle />
+    <NuxtLink to="/" class="back-link">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 12H5" />
+        <path d="m11 6-6 6 6 6" />
+      </svg>
+      Zurück zum Generator
+    </NuxtLink>
+
     <main class="admin-content">
-      <NuxtLink to="/" class="back-link">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M19 12H5" />
-          <path d="m11 6-6 6 6 6" />
-        </svg>
-        Zurück zum Generator
-      </NuxtLink>
+      <div class="admin-intro">
+        <p class="eyebrow">Redaktion</p>
+        <h2 class="admin-heading">Verwaltung.</h2>
+      </div>
 
       <section class="panel">
+        <p class="eyebrow">01 — Zugang</p>
         <h2 class="panel-title">Zugang</h2>
         <form class="token-form" @submit.prevent="checkToken">
           <input
@@ -126,6 +132,7 @@ async function deleteSticker(id: string) {
       </section>
 
       <section v-if="isAdmin" class="panel" data-testid="sticker-management">
+        <p class="eyebrow">02 — Bibliothek</p>
         <div class="panel-heading">
           <h2 class="panel-title">Sticker verwalten</h2>
           <span v-if="catalog.stickers.value.length" class="count">{{ catalog.stickers.value.length }}</span>
@@ -161,39 +168,60 @@ async function deleteSticker(id: string) {
 </template>
 
 <style scoped>
-.admin {
-  min-height: 100dvh;
-}
-
 .admin-content {
   max-width: 60rem;
-  margin: 0 auto;
-  padding: 1.25rem var(--page-gutter) 3rem;
+  padding: 2rem var(--page-gutter) 4rem;
 }
 
+/* A full-width cell under the header, ruled like the toolbar. */
 .back-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.375rem;
-  margin-bottom: 1rem;
-  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
-  font-weight: 600;
-  color: var(--brand);
+  gap: 0.5rem;
+  padding: 0.875rem var(--page-gutter);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
   text-decoration: none;
-  border-radius: 8px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.back-link .icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .back-link:hover {
-  background-color: var(--brand-tint);
+  color: var(--ink);
+  background-color: var(--surface-3);
+}
+
+.back-link:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.admin-intro {
+  margin-bottom: 2rem;
+}
+
+.admin-heading {
+  margin-top: 0.5rem;
+  font-size: clamp(2.25rem, 1.25rem + 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
 }
 
 .panel {
-  margin-bottom: 1.25rem;
-  padding: 1.25rem;
+  overflow: hidden;
+  padding: 1.5rem;
   background-color: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--line-strong);
+}
+
+/* neighbouring panels share one rule */
+.panel + .panel {
+  margin-top: -1px;
 }
 
 .panel-heading {
@@ -203,18 +231,22 @@ async function deleteSticker(id: string) {
 }
 
 .panel-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  margin-top: 0.375rem;
+  font-size: 1.5rem;
+  font-weight: 500;
   line-height: 1.2;
+  letter-spacing: -0.03em;
 }
 
 .count {
-  padding: 0.125rem 0.625rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: var(--brand);
-  background-color: var(--brand-tint);
-  border-radius: 999px;
+  margin-top: 0.375rem;
+  padding: 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  background-color: var(--surface-3);
+  border: 1px solid var(--line);
 }
 
 .token-form {
@@ -227,10 +259,10 @@ async function deleteSticker(id: string) {
 .token-input {
   flex: 1 1 14rem;
   min-height: 2.75rem;
-  padding: 0 0.875rem;
+  padding: 0 1.125rem;
   background-color: var(--surface);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -244,8 +276,8 @@ async function deleteSticker(id: string) {
 
 .token-input:focus {
   outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--brand-tint-strong);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint-strong);
 }
 
 .token-status {
@@ -254,12 +286,12 @@ async function deleteSticker(id: string) {
   gap: 0.5rem;
   margin-top: 0.875rem;
   padding: 0.25rem 0.75rem 0.25rem 0.625rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--ink-soft);
-  background-color: var(--bg);
-  border-radius: 999px;
+  background-color: var(--surface-3);
+  border: 1px solid var(--line);
 }
 
 .status-dot {
@@ -267,7 +299,7 @@ async function deleteSticker(id: string) {
   width: 0.5rem;
   height: 0.5rem;
   background-color: var(--muted);
-  border-radius: 50%;
+  border-radius: 0;
 }
 
 .status-valid { color: var(--success); background-color: var(--success-tint); }
@@ -276,10 +308,10 @@ async function deleteSticker(id: string) {
 .status-invalid .status-dot { background-color: var(--danger); }
 
 .hint {
-  margin: 0.375rem 0 1rem;
+  margin: 0.5rem 0 1rem;
   max-width: 40rem;
   font-size: 0.9375rem;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--muted);
 }
 
@@ -296,30 +328,32 @@ async function deleteSticker(id: string) {
   cursor: progress;
 }
 
+/* Ruled grid running edge to edge of the panel, like the library on the generator page. */
 .sticker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
-  gap: 0.75rem;
-  margin-top: 1.25rem;
+  margin: 1.5rem calc(-1.5rem - 1px) calc(-1.5rem - 1px) -1.5rem;
+  border-top: 1px solid var(--line-strong);
 }
 
 .sticker-tile {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background-color: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-right: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .sticker-tile img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  padding: 0.375rem;
-  border-radius: 6px;
+  padding: 0.75rem;
   /* checkerboard shows transparency */
   background: var(--checker);
+}
+
+.sticker-tile .btn {
+  width: 100%;
+  border-width: 1px 0 0;
 }
 </style>

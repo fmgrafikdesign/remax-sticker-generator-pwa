@@ -34,7 +34,7 @@ const active = computed(() => selectedId.value !== null)
 
   .btn {
     padding: 0;
-    width: 2.75rem;
+    width: 3.5rem;
   }
 }
 </style>

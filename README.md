@@ -23,6 +23,10 @@ Stickers live in an S3-compatible bucket; there is no database. Requires Node 22
   new version then shows "Neue Version verfügbar" (`UpdatePrompt.vue`); "Jetzt aktualisieren" reloads into it, "Später"
   keeps the current one until the next full page load. Serve `/sw.js` and `/manifest.webmanifest` with
   `Cache-Control: no-cache` (or `max-age=0`), otherwise a CDN or proxy can hide new versions from users.
+- **Design**: "technical magazine", modelled on tailwindcss.com. Tokens live in `app/assets/main.css`: Tailwind's cool
+  gray scale, one accent (`--accent`, the IKS blue), hairline rules instead of shadows, a hatched margin around the
+  ruled `.frame` page, Inter (variable, Latin subset) for text and IBM Plex Mono for captions (`.eyebrow`). Light and
+  dark follow `prefers-color-scheme`; `theme-color` is set per scheme in `nuxt.config.ts`.
 
 ## Seeding
 

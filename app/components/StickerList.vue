@@ -22,6 +22,10 @@ function onStickerClick(url: string) {
 <template>
   <section class="sticker-panel" aria-labelledby="sticker-panel-title">
     <header class="panel-head">
+      <p class="eyebrow panel-eyebrow">
+        <span>02 — Bibliothek</span>
+        <span v-if="catalog.stickers.value.length" class="panel-count">{{ catalog.stickers.value.length }}</span>
+      </p>
       <h2 id="sticker-panel-title" class="panel-title">Sticker</h2>
       <p class="panel-hint" :class="{ 'is-waiting': !hasImage }">
         <template v-if="hasImage">Tippen zum Hinzufügen</template>
@@ -46,62 +50,88 @@ function onStickerClick(url: string) {
     </div>
 
     <footer class="panel-foot">
-      <NuxtLink to="/admin" class="manage-link">Verwalten</NuxtLink>
+      <NuxtLink to="/admin" class="manage-link">
+        Verwalten
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="m13 6 6 6-6 6" />
+        </svg>
+      </NuxtLink>
     </footer>
   </section>
 </template>
 
 <style scoped>
-/* Desktop: a card with its own scroll area and a pinned footer. */
+/* Desktop: a column with its own scroll area and a pinned footer, divided from the editor by a hairline. */
 .sticker-panel {
   display: flex;
   flex-direction: column;
   min-height: 0;
   background-color: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
+  border-left: 1px solid var(--line-strong);
 }
 
 .panel-head {
-  padding: 1.25rem 1.25rem 0.75rem;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.panel-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-count {
+  padding: 0 0.5rem;
+  color: var(--ink-soft);
+  background-color: var(--surface-3);
+  border: 1px solid var(--line);
 }
 
 .panel-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.2;
+  margin-top: 0.5rem;
+  font-size: 2.25rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
 }
 
 .panel-hint {
-  margin-top: 0.25rem;
-  color: var(--muted);
+  margin-top: 0.5rem;
   line-height: 1.4;
+  color: var(--muted);
 }
 
 .panel-hint.is-waiting {
-  color: var(--brand);
+  color: var(--accent);
 }
 
 .panel-body {
   flex: 1;
   min-height: 0;
-  padding: 0.5rem 1.25rem 1.25rem;
+  padding: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 
 .panel-message {
-  padding: 2rem 0;
+  padding: 2rem 1.5rem;
   text-align: center;
   color: var(--muted);
 }
 
+/* Edge-to-edge ruled grid: every cell draws its right and bottom rule, the grid's -1px margin hides the outermost ones. */
 .sticker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(6.25rem, 1fr));
-  gap: 0.625rem;
+  margin: 0 -1px -1px 0;
+}
+
+.sticker-grid > li {
+  border-right: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .sticker-tile,
@@ -109,17 +139,21 @@ function onStickerClick(url: string) {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--radius-sm);
 }
 
 .sticker-tile {
-  padding: 0.5rem;
+  padding: 0.75rem;
   background: var(--checker);
-  border: 1px solid var(--line);
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, opacity 0.15s;
+  border: 0;
+  border-radius: 0;
+  transition: box-shadow 0.15s, opacity 0.15s, transform 0.1s;
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
+}
+
+.sticker-tile:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 .sticker-tile img {
@@ -131,9 +165,7 @@ function onStickerClick(url: string) {
 
 @media (hover: hover) {
   .sticker-tile:hover {
-    border-color: var(--brand);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 2px var(--ink);
   }
 }
 
@@ -143,20 +175,18 @@ function onStickerClick(url: string) {
 
 /* Still clickable so the tap can explain why nothing happens, but clearly not ready. */
 .is-inactive .sticker-tile {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 @media (hover: hover) {
   .is-inactive .sticker-tile:hover {
-    border-color: var(--line);
     box-shadow: none;
-    transform: none;
   }
 }
 
 .sticker-skeleton {
-  background: linear-gradient(100deg, #eceff4 30%, #f7f9fb 50%, #eceff4 70%) 0 0 / 200% 100%;
+  background: linear-gradient(100deg, var(--surface-3) 30%, var(--surface-2) 50%, var(--surface-3) 70%) 0 0 / 200% 100%;
   animation: shimmer 1.4s linear infinite;
 }
 
@@ -167,54 +197,64 @@ function onStickerClick(url: string) {
 }
 
 .panel-foot {
-  padding: 0.75rem 1.25rem;
-  text-align: center;
-  background-color: #fafbfd;
-  border-top: 1px solid var(--line);
+  background-color: var(--surface);
+  border-top: 1px solid var(--line-strong);
 }
 
 .manage-link {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
   color: var(--muted);
   text-decoration: none;
-  border-radius: 6px;
+}
+
+.manage-link .icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .manage-link:hover {
-  color: var(--brand);
-  background-color: var(--brand-tint);
+  color: var(--ink);
+  background-color: var(--surface-3);
 }
 
-/* Phone: no card. The list is plain content on the white page, "Verwalten" is the last thing on it. */
+.manage-link:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+/* Phone: no scroll area. The list is plain content on the page, "Verwalten" is the last thing on it. */
 @media (max-width: 59.99rem) {
   .sticker-panel {
-    background-color: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    overflow: visible;
+    border-left: 0;
   }
 
   .panel-head {
-    padding: 1.25rem var(--page-gutter) 0.75rem;
+    padding: 1.5rem var(--page-gutter) 0.75rem;
+  }
+
+  .panel-title {
+    font-size: 2rem;
   }
 
   .panel-body {
-    padding: 0 var(--page-gutter) 1rem;
-    overflow: visible;
+    padding: 0;
+    overflow: clip;
+  }
+
+  .panel-message {
+    padding: 2rem var(--page-gutter);
   }
 
   .sticker-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .panel-foot {
-    padding: 1rem var(--page-gutter) 2rem;
-    background-color: transparent;
-    border-top: 0;
+  .manage-link {
+    padding: 1rem var(--page-gutter);
   }
 }
 

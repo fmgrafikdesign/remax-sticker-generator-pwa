@@ -47,19 +47,21 @@ const { toasts, dismiss } = useToast()
   pointer-events: none;
 }
 
+/* Always a dark "code window" card, whatever the page scheme, with the type shown by the icon colour. */
 .toast {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   width: 100%;
   padding: 0.75rem 1rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 500;
   line-height: 1.4;
   text-align: left;
   color: #fff;
+  background-color: oklch(0.21 0.034 264.665);
   border: 0;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 12%), var(--shadow-pop);
   pointer-events: auto;
 }
 
@@ -67,9 +69,9 @@ const { toasts, dismiss } = useToast()
   margin-top: 0.125rem;
 }
 
-.toast-success { background-color: var(--success); }
-.toast-info { background-color: var(--brand); }
-.toast-warning { background-color: var(--danger); }
+.toast-success .toast-icon { color: oklch(0.792 0.209 151.711); }
+.toast-info .toast-icon { color: oklch(0.746 0.16 232.661); }
+.toast-warning .toast-icon { color: oklch(0.795 0.184 86.047); }
 
 .toast-enter-active,
 .toast-leave-active {

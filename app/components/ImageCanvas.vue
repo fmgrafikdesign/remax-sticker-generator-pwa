@@ -31,16 +31,17 @@ function onFileChange(event: Event) {
 
       <label v-else class="dropzone">
         <input class="sr-only" name="image" type="file" accept="image/*" @change="onFileChange">
-        <span class="dropzone-icon" aria-hidden="true">
-          <svg class="icon" viewBox="0 0 24 24">
+        <span class="eyebrow">01 — Foto</span>
+        <span class="dropzone-title">Starte mit deinem Foto.</span>
+        <span class="dropzone-hint">Wähle ein Bild von deinem Gerät. Es wird nicht hochgeladen, sondern bleibt bei dir.</span>
+        <span class="btn btn--primary dropzone-button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="3" />
             <circle cx="9" cy="9" r="1.75" />
             <path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21" />
           </svg>
+          Bild wählen
         </span>
-        <span class="dropzone-title">Starte mit deinem Foto</span>
-        <span class="dropzone-hint">Wähle ein Bild von deinem Gerät. Es wird nicht hochgeladen, sondern bleibt bei dir.</span>
-        <span class="btn btn--primary dropzone-button">Bild wählen</span>
       </label>
     </div>
     <CanvasBottomBar />
@@ -66,9 +67,7 @@ function onFileChange(event: Event) {
   min-width: 0;
   padding: 1.25rem 1rem;
   container-type: size;
-  background-color: #e9eef5;
-  background-image: radial-gradient(circle, rgb(15 27 45 / 13%) 1px, transparent 1.5px);
-  background-size: 20px 20px;
+  background: var(--hatch), var(--surface-2);
 }
 
 .preview-image {
@@ -85,33 +84,27 @@ function onFileChange(event: Event) {
   width: fit-content;
   max-width: 100%;
   margin: 0 auto;
-  border-radius: 6px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-float);
 }
 
 .dropzone {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   width: 100%;
-  height: 100%;
-  max-width: 34rem;
-  max-height: 26rem;
+  max-width: 38rem;
   padding: 1.5rem;
-  text-align: center;
   cursor: pointer;
-  background-color: rgb(255 255 255 / 70%);
-  border: 2px dashed #9db8d6;
-  border-radius: var(--radius-lg);
-  transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+  background-color: var(--surface);
+  border: 1px dashed var(--line-strong);
+  transition: border-color 0.15s;
 }
 
 .dropzone:hover,
 .dropzone:has(input:focus-visible) {
-  background-color: #fff;
-  border-color: var(--brand);
+  border-color: var(--ink);
 }
 
 .dropzone:has(input:focus-visible) {
@@ -119,53 +112,35 @@ function onFileChange(event: Event) {
 }
 
 .dropzone:hover .dropzone-button {
-  background-color: var(--brand-hover);
-}
-
-.dropzone-icon {
-  display: grid;
-  place-items: center;
-  width: 4.5rem;
-  height: 4.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--brand);
-  background-color: var(--brand-tint);
-  border-radius: 50%;
-}
-
-.dropzone-icon .icon {
-  width: 2rem;
-  height: 2rem;
-  stroke-width: 1.75;
+  background-color: var(--primary-bg-hover);
 }
 
 .dropzone-title {
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(2.25rem, 1.25rem + 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
 }
 
 .dropzone-hint {
-  max-width: 24rem;
-  color: var(--muted);
-  line-height: 1.45;
+  max-width: 26rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
 }
 
 .dropzone-button {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   padding: 0 1.5rem;
 }
 
 @media (min-width: 60rem) {
-  .stage {
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-  }
-
   .stage-canvas {
     padding: 2rem;
+  }
+
+  .dropzone {
+    padding: 2.5rem;
   }
 }
 </style>

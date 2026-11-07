@@ -1,40 +1,117 @@
+/*
+ * Design language: technical magazine.
+ * Cool tinted grays, one accent, hairline rules instead of shadows, a hatched margin around a ruled page,
+ * big tightly tracked Inter headings and small IBM Plex Mono captions. Light and dark follow the OS.
+ */
+
+/* Latin subset only: the app is German, so the other Inter subsets would only bloat the precache. */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ---------- Design tokens ---------- */
 
 :root {
-  --brand: #0054a4;
-  --brand-hover: #004a91;
-  --brand-active: #003f7c;
-  --brand-tint: #eef5fc;
-  --brand-tint-strong: #d6e6f7;
+  color-scheme: light dark;
 
-  --danger: #c4161c;
-  --danger-tint: #fdecec;
-  --success: #17803d;
-  --success-tint: #e8f6ed;
+  /* Tailwind's cool gray scale */
+  --gray-50: oklch(0.985 0.002 247.839);
+  --gray-100: oklch(0.967 0.003 264.542);
+  --gray-200: oklch(0.928 0.006 264.531);
+  --gray-300: oklch(0.872 0.01 258.338);
+  --gray-400: oklch(0.707 0.022 261.325);
+  --gray-500: oklch(0.551 0.027 264.364);
+  --gray-600: oklch(0.446 0.03 256.802);
+  --gray-700: oklch(0.373 0.034 259.733);
+  --gray-800: oklch(0.278 0.033 256.848);
+  --gray-900: oklch(0.21 0.034 264.665);
+  --gray-950: oklch(0.13 0.028 261.692);
 
-  --ink: #0f1b2d;
-  --ink-soft: #3b4a60;
-  --muted: #66758a;
-  --bg: #f2f5f9;
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* surfaces: the hatched margin, the page, a subtle fill, a stronger fill */
+  --bg: var(--gray-50);
   --surface: #fff;
-  --line: #e1e6ee;
-  --line-strong: #c9d2df;
+  --surface-2: var(--gray-50);
+  --surface-3: var(--gray-100);
 
-  --radius-sm: 10px;
-  --radius: 16px;
-  --radius-lg: 24px;
+  --ink: var(--gray-950);
+  --ink-soft: var(--gray-700);
+  --muted: var(--gray-500);
 
-  --shadow-sm: 0 1px 2px rgb(15 27 45 / 6%), 0 1px 3px rgb(15 27 45 / 8%);
-  --shadow-md: 0 4px 12px rgb(15 27 45 / 8%), 0 2px 4px rgb(15 27 45 / 6%);
-  --shadow-lg: 0 24px 48px -12px rgb(15 27 45 / 22%), 0 8px 16px -8px rgb(15 27 45 / 12%);
+  /* hairlines */
+  --line: oklch(0.13 0.028 261.692 / 8%);
+  --line-strong: oklch(0.13 0.028 261.692 / 16%);
+  --pattern-fg: oklch(0.13 0.028 261.692 / 6%);
 
-  --focus-ring: 0 0 0 3px #fff, 0 0 0 5px var(--brand);
+  --accent: #0054a4;
+  --accent-tint: color-mix(in oklab, var(--accent) 8%, transparent);
+  --accent-tint-strong: color-mix(in oklab, var(--accent) 16%, transparent);
 
+  --primary-bg: var(--gray-950);
+  --primary-bg-hover: var(--gray-800);
+  --primary-fg: #fff;
+
+  --danger: oklch(0.505 0.213 27.518);
+  --danger-tint: oklch(0.505 0.213 27.518 / 8%);
+  --success: oklch(0.527 0.154 150.069);
+  --success-tint: oklch(0.527 0.154 150.069 / 10%);
+
+  --shadow-float: 0 24px 40px -24px rgb(3 7 18 / 35%), 0 8px 16px -8px rgb(3 7 18 / 12%);
+  --shadow-pop: 0 16px 32px -12px rgb(3 7 18 / 25%);
+
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent);
+
+  --frame-w: 80rem;
   --header-h: 3.5rem;
   --page-gutter: 1rem;
 
+  /* diagonal hairline hatch, the margin ornament */
+  --hatch: repeating-linear-gradient(315deg, var(--pattern-fg) 0, var(--pattern-fg) 1px, transparent 0, transparent 50%) 0 0 / 10px 10px;
+
   /* Transparent-image backdrop: light enough for dark stickers, with enough contrast for white ones. */
-  --checker: repeating-conic-gradient(#e3e8f0 0% 25%, #d3dae5 0% 50%) 50% / 16px 16px;
+  --checker-a: var(--gray-100);
+  --checker-b: var(--gray-200);
+  --checker: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 50% / 16px 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--gray-950);
+    --surface: var(--gray-950);
+    --surface-2: var(--gray-900);
+    --surface-3: var(--gray-800);
+
+    --ink: #fff;
+    --ink-soft: var(--gray-300);
+    --muted: var(--gray-400);
+
+    --line: oklch(1 0 0 / 10%);
+    --line-strong: oklch(1 0 0 / 20%);
+    --pattern-fg: oklch(1 0 0 / 8%);
+
+    --accent: oklch(0.72 0.13 250);
+
+    --primary-bg: var(--gray-700);
+    --primary-bg-hover: var(--gray-600);
+
+    --danger: oklch(0.704 0.191 22.216);
+    --danger-tint: oklch(0.704 0.191 22.216 / 12%);
+    --success: oklch(0.792 0.209 151.711);
+    --success-tint: oklch(0.792 0.209 151.711 / 12%);
+
+    --shadow-float: 0 24px 40px -24px rgb(0 0 0 / 70%);
+    --shadow-pop: 0 16px 32px -12px rgb(0 0 0 / 60%);
+
+    --checker-a: var(--gray-800);
+    --checker-b: var(--gray-700);
+  }
 }
 
 @media (min-width: 60rem) {
@@ -66,11 +143,11 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--ink);
-  background-color: var(--bg);
+  background: var(--hatch), var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -102,12 +179,39 @@ a {
   color: inherit;
 }
 
+::selection {
+  background-color: var(--accent-tint-strong);
+}
+
 :focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }
 
 /* ---------- Shared pieces ---------- */
+
+/* The ruled page: a white column framed by hairlines, the hatch shows in the margin on wide screens. */
+.frame {
+  width: 100%;
+  max-width: var(--frame-w);
+  min-height: 100dvh;
+  margin: 0 auto;
+  background-color: var(--surface);
+}
+
+@media (min-width: 80rem) {
+  .frame {
+    border-inline: 1px solid var(--line);
+  }
+}
+
+/* Small mono caption above a heading, e.g. "01 — Foto". */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.33;
+  color: var(--muted);
+}
 
 /* Visually hidden but still focusable, e.g. native file inputs behind a styled label. */
 .sr-only {
@@ -128,7 +232,7 @@ a {
   height: 1.25rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -139,25 +243,22 @@ a {
   justify-content: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  padding: 0 1rem;
-  font-weight: 600;
+  padding: 0 1.125rem;
+  font-weight: 500;
   font-size: 0.9375rem;
   line-height: 1;
   white-space: nowrap;
   color: var(--ink);
   background-color: var(--surface);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
+  border-radius: 0;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
   user-select: none;
   -webkit-user-select: none;
 }
 
 .btn:hover {
-  background-color: var(--brand-tint);
-  border-color: var(--brand-tint-strong);
-  color: var(--brand);
+  background-color: var(--surface-3);
 }
 
 .btn:active {
@@ -171,9 +272,8 @@ a {
 .btn:disabled,
 .btn[aria-disabled='true'] {
   color: var(--muted);
-  background-color: var(--bg);
+  background-color: var(--surface-2);
   border-color: var(--line);
-  box-shadow: none;
 }
 
 .btn:disabled {
@@ -181,60 +281,54 @@ a {
 }
 
 .btn:disabled:hover {
-  color: var(--muted);
-  background-color: var(--bg);
-  border-color: var(--line);
+  background-color: var(--surface-2);
 }
 
 .btn--primary {
-  color: #fff;
-  background-color: var(--brand);
-  border-color: var(--brand);
-  box-shadow: 0 1px 2px rgb(0 84 164 / 30%), 0 4px 10px -2px rgb(0 84 164 / 35%);
+  color: var(--primary-fg);
+  background-color: var(--primary-bg);
+  border-color: transparent;
 }
 
 .btn--primary:hover {
-  color: #fff;
-  background-color: var(--brand-hover);
-  border-color: var(--brand-hover);
-}
-
-.btn--primary:active {
-  background-color: var(--brand-active);
+  background-color: var(--primary-bg-hover);
 }
 
 .btn--primary[aria-disabled='true'],
 .btn--primary:disabled,
 .btn--primary:disabled:hover {
   color: var(--muted);
-  background-color: var(--bg);
+  background-color: var(--surface-2);
   border-color: var(--line);
-  box-shadow: none;
 }
 
 .btn--danger {
   color: var(--danger);
   background-color: var(--danger-tint);
   border-color: transparent;
-  box-shadow: none;
 }
 
 .btn--danger:hover {
-  color: #fff;
-  background-color: var(--danger);
-  border-color: var(--danger);
+  background-color: color-mix(in oklab, var(--danger) 18%, transparent);
+}
+
+.btn--danger:disabled,
+.btn--danger:disabled:hover {
+  color: var(--muted);
+  background-color: var(--surface-2);
+  border-color: var(--line);
 }
 
 .btn--sm {
   min-height: 2.25rem;
-  padding: 0 0.75rem;
+  padding: 0 0.875rem;
   font-size: 0.875rem;
 }
 
 /* ---------- Moveable handles (created at runtime, so they can't be styled from a scoped block) ---------- */
 
 .moveable-control-box .moveable-line {
-  background: var(--brand) !important;
+  background: var(--accent) !important;
 }
 
 .moveable-control-box .moveable-control {
@@ -243,13 +337,15 @@ a {
   margin-top: -8px !important;
   margin-left: -8px !important;
   background: #fff !important;
-  border: 3px solid var(--brand) !important;
-  box-shadow: var(--shadow-md);
+  border: 2px solid var(--accent) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 6px rgb(3 7 18 / 25%);
 }
 
 .moveable-control-box .moveable-rotation-control {
-  background: var(--brand) !important;
+  background: var(--accent) !important;
   border-color: #fff !important;
+  border-radius: 50% !important;
 }
 
 /* Easier to grab on touch screens without enlarging the visible handle. */

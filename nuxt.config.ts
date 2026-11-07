@@ -1,4 +1,6 @@
-const themeColor = '#0054a4'
+// light page, so the browser chrome and splash screen are white; the dark scheme gets its own value below
+const themeColor = '#ffffff'
+const themeColorDark = '#030712'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-11-01',
@@ -8,9 +10,8 @@ export default defineNuxtConfig({
   // static app shell, precached by the service worker as offline navigation fallback
   nitro: { prerender: { routes: ['/'] } },
   css: [
-    '@fontsource/source-sans-pro/latin-400.css',
-    '@fontsource/source-sans-pro/latin-600.css',
-    '@fontsource/source-sans-pro/latin-700.css',
+    '@fontsource/ibm-plex-mono/latin-400.css',
+    '@fontsource/ibm-plex-mono/latin-500.css',
     '~/assets/main.css'
   ],
   app: {
@@ -19,8 +20,9 @@ export default defineNuxtConfig({
       title: 'Immobilien Kontor Saarlouis Sticker Generator',
       meta: [
         { name: 'viewport', content: 'width=device-width,initial-scale=1.0' },
-        { name: 'theme-color', content: themeColor },
-        { name: 'msapplication-TileColor', content: themeColor },
+        { name: 'theme-color', content: themeColor, media: '(prefers-color-scheme: light)' },
+        { name: 'theme-color', content: themeColorDark, media: '(prefers-color-scheme: dark)' },
+        { name: 'msapplication-TileColor', content: '#0054a4' },
         { name: 'msapplication-config', content: '/icons/browserconfig.xml' }
       ],
       link: [
